@@ -46,6 +46,12 @@ router.get("/js", async (req, res) => {
   res.status(200).json({ data: data });
 });
 
+// get todos by language
+router.get("/language", async (req, res) => {
+  const data = await Todo.find().byLanguage('socket');
+  res.status(200).json({ data: data });
+});
+
 // get a todo by id
 router.get("/:id", async (req, res) => {
   // Todo.find({ _id: req.params.id }).exec((err, data) => {
