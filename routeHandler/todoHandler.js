@@ -25,21 +25,25 @@ router.get("/active", async (req, res) => {
   const todo = new Todo();
   const data = await todo.findActive();
   res.status(200).json({
-    data
-  })
+    data,
+  });
 });
 
 // get active todos with callback
 router.get("/active-callback", (req, res) => {
   const todo = new Todo();
   todo.findActiveCallback((err, data) => {
-    if(err) {
-      res.status(500).json({error: 'Server Side Error'})
-    }
-    else {
-      res.status(200).json({success: true, data})
+    if (err) {
+      res.status(500).json({ error: "Server Side Error" });
+    } else {
+      res.status(200).json({ success: true, data });
     }
   });
+});
+
+router.get("/js", async (req, res) => {
+  const data = await Todo.findByJs();
+  res.status(200).json({ data: data });
 });
 
 // get a todo by id
