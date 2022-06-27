@@ -3,14 +3,15 @@ const router = express.Router();
 const todoSchema = require("../schemas/todoSchema");
 const mongoose = require("mongoose");
 const Todo = new mongoose.model("Todo", todoSchema);
+const checkLogin = require('../middlewares/checkLogin');
 
 // get all todos
-router.get("/", (req, res) => {
+router.get("/", checkLogin, (req, res) => {
   Todo.find({})
-    .select({
-      _id: 0,
-    })
-    .limit(2)
+    // .select({
+    //   _id: 0,
+    // })
+    // .limit(2)
     .exec((err, data) => {
       if (err) {
         res.status(500).json({ error: "Server Side error" });
@@ -71,7 +72,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // post a todo
-router.post("/", async (req, res) => {
+router.post("/", checkLogin, async (req, res) => {
   const newTodo = new Todo(req.body);
   await newTodo.save((err, data) => {
     if (err) {
