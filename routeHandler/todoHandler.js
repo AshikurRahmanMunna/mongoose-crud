@@ -73,18 +73,19 @@ router.get("/:id", async (req, res) => {
 
 // post a todo
 router.post("/", checkLogin, async (req, res) => {
-  const newTodo = new Todo(req.body);
-  await newTodo.save((err, data) => {
-    if (err) {
-      res.status(500).json({ error: "There was a error in the server" });
-    } else {
-      res.status(200).json({ message: "ToDo was inserted successfully", data });
-    }
-  });
+  try {
+    const newTodo = new Todo(req.body);
+    await newTodo.save();
+    res.status(200).json({ message: "ToDo was inserted successfully", data });
+  }
+  catch(err) {
+    res.status(500).json({ error: "There was a error in the server" });
+    console.log(err);
+  }
 });
 
 // post multiple todo
-router.post("/all", async (req, res) => {
+router.post("/all", checkLogin, async (req, res) => {
   await Todo.insertMany(req.body, (err) => {
     if (err) {
       res.status(500).json({ error: "Internal Server Error" });

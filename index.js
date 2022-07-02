@@ -13,7 +13,7 @@ mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.44qduad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
   )
-  .then(() => console.log("Connection Successfully"))
+  .then(() => console.log("Connected Successfully"))
   .catch((err) => console.log(err));
 
 // application routes
