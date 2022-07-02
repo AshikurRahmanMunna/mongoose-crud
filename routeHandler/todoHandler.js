@@ -80,7 +80,6 @@ router.post("/", checkLogin, async (req, res) => {
   }
   catch(err) {
     res.status(500).json({ error: "There was a error in the server" });
-    console.log(err);
   }
 });
 
