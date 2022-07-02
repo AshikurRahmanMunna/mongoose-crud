@@ -1,17 +1,20 @@
 const express = require("express");
 const router = express.Router();
 const todoSchema = require("../schemas/todoSchema");
+const userSchema = require("../schemas/userSchema");
 const mongoose = require("mongoose");
 const Todo = new mongoose.model("Todo", todoSchema);
+const User = new mongoose.model("User", userSchema);
 const checkLogin = require('../middlewares/checkLogin');
 
 // get all todos
 router.get("/", checkLogin, (req, res) => {
+  const limit = req.query.limit;
+  const skip = req.query.skip;
   Todo.find({})
-    // .select({
-    //   _id: 0,
-    // })
-    // .limit(2)
+    .populate("user", "name username -_id")
+    .skip(skip)
+    .limit(limit)
     .exec((err, data) => {
       if (err) {
         res.status(500).json({ error: "Server Side error" });
@@ -73,13 +76,22 @@ router.get("/:id", async (req, res) => {
 
 // post a todo
 router.post("/", checkLogin, async (req, res) => {
+  const newTodo = new Todo({
+    ...req.body,
+    user: req.userId
+  });
   try {
-    const newTodo = new Todo(req.body);
-    await newTodo.save();
-    res.status(200).json({ message: "ToDo was inserted successfully", data });
+    const todo = await newTodo.save();
+    await User.updateOne({ _id: req.userId }, {
+      $push: {
+        todos: todo._id
+      }
+    })
+    res.status(200).json({ message: "ToDo was inserted successfully" });
   }
-  catch(err) {
+  catch (err) {
     res.status(500).json({ error: "There was a error in the server" });
+    console.log(err);
   }
 });
 
