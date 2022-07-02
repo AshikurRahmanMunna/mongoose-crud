@@ -17,9 +17,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['active', 'inactive']
     },
-    time: {
-        type: Date,
-        default: Date.now
+    todos: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Todo"
+        }
+    ]
+}, {
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
     }
 })
 

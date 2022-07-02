@@ -4,6 +4,7 @@ const userSchema = require("../schemas/userSchema");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
+const checkLogin = require("../middlewares/checkLogin");
 const User = new mongoose.model("User", userSchema);
 
 // get all todos
@@ -63,5 +64,17 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+
+// get all users
+router.get('/all',checkLogin, async(req, res) => {
+  try {
+    const data = await User.find({}).populate("todos")
+    res.status(200).json({message: "Success", data: data});
+  }
+  catch(err) {
+    console.log(err);
+    res.status(500).json({message: "There was an error in the server side"});
+  }
+})
 
 module.exports = router;
